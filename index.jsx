@@ -20,16 +20,33 @@ var myComp = app.project.items.addComp(
 );
 
 myComp.openInViewer();
-var background = myComp.layers.addSolid([255,255,255], "background", compWidth, compHeight, aR, compDuration);
+var background = myComp.layers.addSolid(
+  [255, 255, 255],
+  "background",
+  compWidth,
+  compHeight,
+  aR,
+  compDuration
+);
 
 //spinner
 {
-    app.beginUndoGroup("createLayers");
-      var spinner = myComp.layers.addShape();
-      spinner.name = "spinner";
-      spinner.property("Transform").property("Position").setValue([912,544]);
-
-      var spinnerElipse1 = spinner.property("Contents").addProperty("ADBE Vector Shape");
-
-    app.endUndoGroup();
+  app.beginUndoGroup("createLayers");
+  //create shapeLayer
+  var spinner = myComp.layers.addShape();
+  spinner.name = "spinner";
+  spinner.property("Transform").property("Position").setValue([912, 544]);
+  //add ellipse
+  var spinnerContent = spinner
+    .property("Contents")
+    .addProperty("ADBE Vector Group");
+  var spinnerGroup1 = spinner.property("Contents").property("Group 1");
+  var spinnerEllipse1 = spinnerGroup1
+    .property("Contents")
+    .addProperty("ADBE Vector Shape - Ellipse");
+  var spinnerEllipseStroke = spinnerGroup1
+    .property("Contents")
+    .addProperty("ADBE Vector Graphic - Stroke");
+  spinnerEllipseStroke.property("Color").setValue([0, 0, 0]); //STROKE COLOR
+  app.endUndoGroup();
 }
