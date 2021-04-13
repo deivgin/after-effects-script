@@ -31,7 +31,7 @@ var background = myComp.layers.addSolid(
 
 //spinner
 {
-  app.beginUndoGroup("createLayers");
+  app.beginUndoGroup("spinner");
   //create shapeLayer
   var spinner = myComp.layers.addShape();
   spinner.name = "spinner";
@@ -52,6 +52,7 @@ var background = myComp.layers.addSolid(
     .addProperty("ADBE Vector Graphic - Stroke");
   spinnerEllipseStroke.property("Color").setValue([0, 0, 0]); //STROKE COLOR
   spinnerEllipseStroke.property("Stroke Width").setValue(30);
+  spinnerEllipseStroke.property("Line Cap").setValue(2);
   //Trim Paths
   var spinnerEllipseTrimPaths = spinnerGroup1
     .property("Contents")
@@ -62,5 +63,34 @@ var background = myComp.layers.addSolid(
     "ease(time, 0, 2, 0, 20)";
   spinnerEllipseTrimPaths.property("Offset").expression =
     "easeIn(time, 0, thisComp.duration, 0, 360 * thisComp.duration)";
+  app.endUndoGroup();
+}
+
+//outer spinner
+{
+  app.beginUndoGroup("outer spinner");
+  //create shapeLayer
+  var outerSpinner = myComp.layers.addShape();
+  outerSpinner.name = "outerSpinner";
+  outerSpinner.property("Transform").property("Position").setValue([912, 544]);
+  outerSpinner.property("Transform").property("Scale").setValue([92.6, 92.6]);
+  var outerSpinnerContent = outerSpinner
+    .property("Contents")
+    .addProperty("ADBE Vector Group");
+  outerSpinnerContent.name = "Ellipse 1";
+  var outerSpinnerGroup1 = outerSpinner
+    .property("Contents")
+    .property("Ellipse 1");
+  //Add Ellipse
+  var outerSpinnerEllipse1 = outerSpinnerGroup1
+    .property("Contents")
+    .addProperty("ADBE Vector Shape - Ellipse");
+  outerSpinnerEllipse1.property("Size").setValue([880, 880]); //Set Size
+  //Stroke
+  var outerSpinnerEllipseStroke = outerSpinnerGroup1
+    .property("Contents")
+    .addProperty("ADBE Vector Graphic - Stroke");
+  outerSpinnerEllipseStroke.property("Color").setValue([0, 0, 0]); //STROKE COLOR
+  outerSpinnerEllipseStroke.property("Stroke Width").setValue(10);
   app.endUndoGroup();
 }
