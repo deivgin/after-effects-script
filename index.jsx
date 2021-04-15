@@ -20,6 +20,7 @@ var myComp = app.project.items.addComp(
 );
 
 myComp.openInViewer();
+//background
 var background = myComp.layers.addSolid(
   [255, 255, 255],
   "background",
@@ -101,6 +102,7 @@ var background = myComp.layers.addSolid(
   var scooter = myComp.layers.addShape();
   scooter.name = "scooter";
 
+  //create shape groups
   var frameContent = scooter
     .property("Contents")
     .addProperty("ADBE Vector Group");
@@ -111,8 +113,33 @@ var background = myComp.layers.addSolid(
     .property("Contents")
     .addProperty("ADBE Vector Group");
 
+  //Frame
   var frame = scooter.property("Contents").property("Group 1");
   frame.name = "frame";
+  var framePath = frame
+    .property("Contents")
+    .addProperty("ADBE Vector Shape - Group");
+  var frameMask = framePath.property("Path");
+  var frameM = frameMask.value;
+  //frame vertices
+  var v1 = [-230, 204];
+  var v2 = [25, 204];
+  var v3 = [130, 104];
+  var v4 = [167, 204];
+  var v5 = [30, -204];
+  var v6 = [70, -214];
+  //combine vertices
+  frameM.vertices = [v1, v2, v3, v4, v5, v6];
+  frameM.closed = false;
+  frameMask.setValue(frameM);
+  //frame stroke
+  var frameStroke = frame
+    .property("Contents")
+    .addProperty("ADBE Vector Graphic - Stroke");
+  frameStroke.property("Stroke Width").setValue(30);
+  frameStroke.property("Line Cap").setValue(2);
+  frameStroke.property("Line Join").setValue(2);
+  frameStroke.property("Color").setValue([0, 0, 0]);
 
   //Left Wheel
   var leftWheel = scooter.property("Contents").property("Group 2");
@@ -131,6 +158,7 @@ var background = myComp.layers.addSolid(
   leftWheelStroke.property("Line Cap").setValue(2);
   leftWheelStroke.property("Color").setValue([0, 0, 0]);
 
+  //Right wheel
   var rightWheel = scooter.property("Contents").property("Group 3");
   rightWheel.name = "right wheel";
   rightWheel.property("Transform").property("Position").setValue([167, 204]);
