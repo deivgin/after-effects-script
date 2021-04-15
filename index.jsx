@@ -6,10 +6,52 @@ app.newProject();
 //pradiniai duomenys
 var compWidth = 1920;
 var compHeight = 1080;
-var compDuration = 10;
+var compDuration = null;
 var aR = 1;
 var compFPS = 25;
 
+//Composition Duration
+while (
+  compDuration == null ||
+  isNaN(compDuration) ||
+  compDuration % 1 !== 0 ||
+  compDuration < 1 ||
+  compDuration > 30
+) {
+  var compDuration = prompt("Enter composition duration", 10);
+  if (
+    compDuration == null ||
+    isNaN(compDuration) ||
+    compDuration % 1 !== 0 ||
+    compDuration < 1 ||
+    compDuration > 30
+  ) {
+    alert("Enter integer between 1 and 30");
+  }
+}
+
+//Jump Delay Prompt
+var jumpDelay = null;
+while (
+  jumpDelay == null ||
+  isNaN(jumpDelay) ||
+  jumpDelay % 1 !== 0 ||
+  jumpDelay < 0 ||
+  jumpDelay > 5
+) {
+  var jumpDelay = prompt("Enter jump delay", 1);
+  if (
+    jumpDelay == null ||
+    isNaN(jumpDelay) ||
+    jumpDelay % 1 !== 0 ||
+    jumpDelay < 0 ||
+    jumpDelay > 5
+  ) {
+    alert("Enter nimber between 0 and 5");
+  }
+}
+
+//Generate project
 var myComp = app.project.items.addComp(
   "myComp",
   compWidth,
@@ -20,6 +62,7 @@ var myComp = app.project.items.addComp(
 );
 
 myComp.openInViewer();
+
 //background
 var background = myComp.layers.addSolid(
   [255, 255, 255],
@@ -57,7 +100,7 @@ var background = myComp.layers.addSolid(
     "ADBE Slider Control"
   );
   jumpDelayController.name = "Jump delay";
-  jumpDelayController.property("Slider").setValue(2);
+  jumpDelayController.property("Slider").setValue(jumpDelay);
   jumpDelayController.property("Slider").expression = "clamp(value,0,5)";
   app.endUndoGroup();
 
@@ -404,8 +447,6 @@ var background = myComp.layers.addSolid(
   var linesFill = speedLines.Effects.addProperty("ADBE Fill");
   linesFill.property("Color").expression =
     'thisComp.layer("Color controller").effect("Lines")("Color")';
-
-  app.endUndoGroup();
 
   app.endUndoGroup();
 }
