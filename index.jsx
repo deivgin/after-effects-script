@@ -211,3 +211,74 @@ var background = myComp.layers.addSolid(
 
   app.endUndoGroup();
 }
+
+{
+  app.beginUndoGroup("speed lines");
+  //create layer
+  var speedLines = myComp.layers.addShape();
+  speedLines.name = "speedLines";
+  //create shape groups
+  var topLineContent = speedLines
+    .property("Contents")
+    .addProperty("ADBE Vector Group");
+  var BottomLineContent = speedLines
+    .property("Contents")
+    .addProperty("ADBE Vector Group");
+
+  //Top Line
+  var topLine = speedLines.property("Contents").property("Group 1");
+  topLine.name = "top line";
+  var topLinePath = topLine
+    .property("Contents")
+    .addProperty("ADBE Vector Shape - Group");
+  var topLineMask = topLinePath.property("Path");
+  var topLineM = topLineMask.value;
+  var vt1 = [-150, -50];
+  var vt2 = [-50, -50];
+  topLineM.vertices = [vt1, vt2];
+  topLineM.closed = false;
+  topLineMask.setValue(topLineM);
+  //top stroke
+  var topLineStroke = topLine
+    .property("Contents")
+    .addProperty("ADBE Vector Graphic - Stroke");
+  topLineStroke.property("Stroke Width").setValue(30);
+  topLineStroke.property("Line Cap").setValue(2);
+  topLineStroke.property("Color").setValue([0, 0, 0]);
+  //top trimp path
+  var topLineTrimPath = topLine
+    .property("Contents")
+    .addProperty("ADBE Vector Filter - Trim");
+  topLineTrimPath.property("Start").expression =
+    'content("bottom line").content("Trim Paths 1").start.valueAtTime(time -0.1)';
+
+  //Bottom Line
+  var bottomLine = speedLines.property("Contents").property("Group 2");
+  bottomLine.name = "bottom line";
+  var bottomLinePath = bottomLine
+    .property("Contents")
+    .addProperty("ADBE Vector Shape - Group");
+  var bottomLineMask = bottomLinePath.property("Path");
+  var bottomLineM = bottomLineMask.value;
+  var vb1 = [-250, 50];
+  var vb2 = [-50, 50];
+  bottomLineM.vertices = [vb1, vb2];
+  bottomLineM.closed = false;
+  bottomLineMask.setValue(bottomLineM);
+  //bottom stroke
+  var bottomLineStroke = bottomLine
+    .property("Contents")
+    .addProperty("ADBE Vector Graphic - Stroke");
+  bottomLineStroke.property("Stroke Width").setValue(30);
+  bottomLineStroke.property("Line Cap").setValue(2);
+  bottomLineStroke.property("Color").setValue([0, 0, 0]);
+  //bottom trim path
+  var bottomLineTrimPath = bottomLine
+    .property("Contents")
+    .addProperty("ADBE Vector Filter - Trim");
+  bottomLineTrimPath.property("Start").setValueAtTime(0, 100);
+  bottomLineTrimPath.property("Start").setValueAtTime(1, 0);
+  bottomLineTrimPath.property("Start").expression = 'loopOut("pingpong")';
+
+  app.endUndoGroup();
+}
