@@ -94,3 +94,58 @@ var background = myComp.layers.addSolid(
   outerSpinnerEllipseStroke.property("Stroke Width").setValue(10);
   app.endUndoGroup();
 }
+
+//scooter
+{
+  app.beginUndoGroup("scooter");
+  var scooter = myComp.layers.addShape();
+  scooter.name = "scooter";
+
+  var frameContent = scooter
+    .property("Contents")
+    .addProperty("ADBE Vector Group");
+  var leftWheelContent = scooter
+    .property("Contents")
+    .addProperty("ADBE Vector Group");
+  var rightWheelContent = scooter
+    .property("Contents")
+    .addProperty("ADBE Vector Group");
+
+  var frame = scooter.property("Contents").property("Group 1");
+  frame.name = "frame";
+
+  //Left Wheel
+  var leftWheel = scooter.property("Contents").property("Group 2");
+  leftWheel.name = "left wheel";
+  leftWheel.property("Transform").property("Position").setValue([-241, 204]);
+  //left wheel ellipse
+  var leftWheelEllipse = leftWheel
+    .property("Contents")
+    .addProperty("ADBE Vector Shape - Ellipse");
+  leftWheelEllipse.property("Size").setValue([108, 108]);
+  //left wheel stroke
+  var leftWheelStroke = leftWheel
+    .property("Contents")
+    .addProperty("ADBE Vector Graphic - Stroke");
+  leftWheelStroke.property("Stroke Width").setValue(30);
+  leftWheelStroke.property("Line Cap").setValue(2);
+  leftWheelStroke.property("Color").setValue([0, 0, 0]);
+
+  var rightWheel = scooter.property("Contents").property("Group 3");
+  rightWheel.name = "right wheel";
+  rightWheel.property("Transform").property("Position").setValue([167, 204]);
+  //right wheel ellipse
+  var rightWheelEllipse = rightWheel
+    .property("Contents")
+    .addProperty("ADBE Vector Shape - Ellipse");
+  rightWheelEllipse.property("Size").setValue([108, 108]);
+  //right wheel stroke
+  var rightWheelStroke = rightWheel
+    .property("Contents")
+    .addProperty("ADBE Vector Graphic - Stroke");
+  rightWheelStroke.property("Stroke Width").setValue(30);
+  rightWheelStroke.property("Line Cap").setValue(2);
+  rightWheelStroke.property("Color").setValue([0, 0, 0]);
+
+  app.endUndoGroup();
+}
