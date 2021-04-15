@@ -30,6 +30,54 @@ var background = myComp.layers.addSolid(
   compDuration
 );
 
+{
+  app.beginUndoGroup("main controller");
+
+  var mainController = myComp.layers.addNull();
+  mainController.name = "Main controller";
+  //Jump height
+  var jumpHeightController = mainController.Effects.addProperty(
+    "ADBE Slider Control"
+  );
+  jumpHeightController.name = "Jump height";
+  jumpHeightController.property("Slider").setValue(500);
+  jumpHeightController.property("Slider").expression = "clamp(value,-540,540)";
+  app.endUndoGroup();
+
+  //Jump period
+  var jumpPeriodController = mainController.Effects.addProperty(
+    "ADBE Slider Control"
+  );
+  jumpPeriodController.name = "Jump period";
+  jumpPeriodController.property("Slider").setValue(0.5);
+  jumpPeriodController.property("Slider").expression = "clamp(value,0,5)";
+
+  //Jump delay
+  var jumpDelayController = mainController.Effects.addProperty(
+    "ADBE Slider Control"
+  );
+  jumpDelayController.name = "Jump delay";
+  jumpDelayController.property("Slider").setValue(2);
+  jumpDelayController.property("Slider").expression = "clamp(value,0,5)";
+  app.endUndoGroup();
+
+  //Toggle dropshadow
+  var dropShadowToggle = mainController.Effects.addProperty(
+    "ADBE Checkbox Control"
+  );
+  dropShadowToggle.name = "Toggle dropshadow";
+  dropShadowToggle.property("Checkbox").setValue(false);
+
+  //Dropshadow distance
+  var dropshadowDistance = mainController.Effects.addProperty(
+    "ADBE Slider Control"
+  );
+  dropshadowDistance.name = "Dropshadow distance";
+  dropshadowDistance.property("Slider").setValue(30);
+  dropshadowDistance.property("Slider").expression = "clamp(value,0,100)";
+  app.endUndoGroup();
+}
+
 //spinner
 {
   app.beginUndoGroup("spinner");
@@ -102,6 +150,13 @@ var background = myComp.layers.addSolid(
   var scooter = myComp.layers.addShape();
   scooter.name = "scooter";
   scooter.trackMatteType = TrackMatteType.ALPHA;
+
+  //Drop Shadow
+  var scooterDropShadow = scooter.Effects.addProperty("ADBE Drop Shadow");
+  scooterDropShadow.property("Opacity").expression =
+    'if(thisComp.layer("Main controller").effect("Toggle dropshadow")("Checkbox") == 1) {50} else {0}';
+  scooterDropShadow.property("Distance").expression =
+    'thisComp.layer("Main controller").effect("Dropshadow distance")("Slider")';
 
   //create shape groups
   var frameContent = scooter
@@ -177,8 +232,8 @@ var background = myComp.layers.addSolid(
   rightWheelStroke.property("Color").setValue([0, 0, 0]);
 
   //scooter animation
-  //scooter.property("Transform").property("Position").expression =
-  //  'delay = thisComp.layer("Main controller").effect("Jump delay")("Slider");if(time > delay){surface = [960, 540];jumpHeight = thisComp.layer("Main controller").effect("Jump height")("Slider");jump = [960, jumpHeight];period = thisComp.layer("Main controller").effect("Jump period")("Slider");	t = time % (period * 2); if (t > period) t = 2 * period - t; linear(Math.sin(t * Math.PI / period), 0, 1, surface, jump)}else easeOut(time, 0, delay, [300,540],[960,540])';
+  scooter.property("Transform").property("Position").expression =
+    'delay = thisComp.layer("Main controller").effect("Jump delay")("Slider");if(time > delay){surface = [960, 540];jumpHeight = thisComp.layer("Main controller").effect("Jump height")("Slider");jump = [960, jumpHeight];period = thisComp.layer("Main controller").effect("Jump period")("Slider");	t = time % (period * 2); if (t > period) t = 2 * period - t; linear(Math.sin(t * Math.PI / period), 0, 1, surface, jump)}else easeOut(time, 0, delay, [300,540],[960,540])';
 
   app.endUndoGroup();
 }
@@ -217,6 +272,17 @@ var background = myComp.layers.addSolid(
   //create layer
   var speedLines = myComp.layers.addShape();
   speedLines.name = "speedLines";
+  speedLines.parent = scooter;
+  speedLines.property("Transform").property("Opacity").setValue(0);
+  speedLines.property("Transform").property("Opacity").expression =
+    'jumpStart = thisComp.layer("Main controller").effect("Jump delay")("Slider");visible = jumpStart + framesToTime(5);ease(time, jumpStart, visible, 0, 100);';
+
+  //Dropshadow
+  var speedLinesDropshadow = speedLines.Effects.addProperty("ADBE Drop Shadow");
+  speedLinesDropshadow.property("Opacity").expression =
+    'if(thisComp.layer("Main controller").effect("Toggle dropshadow")("Checkbox") == 1) {50} else {0}';
+  speedLinesDropshadow.property("Distance").expression =
+    'thisComp.layer("Main controller").effect("Dropshadow distance")("Slider")';
   //create shape groups
   var topLineContent = speedLines
     .property("Contents")
@@ -233,8 +299,8 @@ var background = myComp.layers.addSolid(
     .addProperty("ADBE Vector Shape - Group");
   var topLineMask = topLinePath.property("Path");
   var topLineM = topLineMask.value;
-  var vt1 = [-150, -50];
-  var vt2 = [-50, -50];
+  var vt1 = [-810, -50];
+  var vt2 = [-710, -50];
   topLineM.vertices = [vt1, vt2];
   topLineM.closed = false;
   topLineMask.setValue(topLineM);
@@ -260,8 +326,8 @@ var background = myComp.layers.addSolid(
     .addProperty("ADBE Vector Shape - Group");
   var bottomLineMask = bottomLinePath.property("Path");
   var bottomLineM = bottomLineMask.value;
-  var vb1 = [-250, 50];
-  var vb2 = [-50, 50];
+  var vb1 = [-910, 50];
+  var vb2 = [-710, 50];
   bottomLineM.vertices = [vb1, vb2];
   bottomLineM.closed = false;
   bottomLineMask.setValue(bottomLineM);
@@ -277,8 +343,69 @@ var background = myComp.layers.addSolid(
     .property("Contents")
     .addProperty("ADBE Vector Filter - Trim");
   bottomLineTrimPath.property("Start").setValueAtTime(0, 100);
-  bottomLineTrimPath.property("Start").setValueAtTime(1, 0);
+  bottomLineTrimPath.property("Start").setValueAtTime(1, 20);
   bottomLineTrimPath.property("Start").expression = 'loopOut("pingpong")';
+
+  app.endUndoGroup();
+}
+
+//color controller
+{
+  app.beginUndoGroup("color controller");
+
+  var colorController = myComp.layers.addNull();
+  colorController.name = "Color controller";
+
+  //Background
+  var backgroundColor = colorController.Effects.addProperty(
+    "ADBE Color Control"
+  );
+  backgroundColor.name = "Background";
+  backgroundColor.property("Color").setValue([255, 255, 255]);
+  //Adding color controller to background
+  var bgFill = background.Effects.addProperty("ADBE Fill");
+  bgFill.property("Color").expression =
+    'thisComp.layer("Color controller").effect("Background")("Color")';
+
+  //Logo
+  var logoColor = colorController.Effects.addProperty("ADBE Color Control");
+  logoColor.name = "Logo";
+  logoColor.property("Color").setValue([0, 0, 0]);
+  //Adding color controller to background
+  var logoFill = scooter.Effects.addProperty("ADBE Fill");
+  logoFill.property("Color").expression =
+    'thisComp.layer("Color controller").effect("Logo")("Color")';
+
+  //Outer spinner
+  var outerSpinnerColor = colorController.Effects.addProperty(
+    "ADBE Color Control"
+  );
+  outerSpinnerColor.name = "Outer spinner";
+  outerSpinnerColor.property("Color").setValue([0, 0, 0]);
+  //Adding color controller to background
+  var outerFill = outerSpinner.Effects.addProperty("ADBE Fill");
+  outerFill.property("Color").expression =
+    'thisComp.layer("Color controller").effect("Outer spinner")("Color")';
+
+  //Spinner
+  var spinnerColor = colorController.Effects.addProperty("ADBE Color Control");
+  spinnerColor.name = "Spinner";
+  spinnerColor.property("Color").setValue([0, 0, 0]);
+  //Adding color controller to background
+  var spinnerFill = spinner.Effects.addProperty("ADBE Fill");
+  spinnerFill.property("Color").expression =
+    'thisComp.layer("Color controller").effect("Spinner")("Color")';
+
+  //Lines
+  var linesColor = colorController.Effects.addProperty("ADBE Color Control");
+  linesColor.name = "Lines";
+  linesColor.property("Color").setValue([0, 0, 0]);
+  //Adding color controller to background
+  var linesFill = speedLines.Effects.addProperty("ADBE Fill");
+  linesFill.property("Color").expression =
+    'thisComp.layer("Color controller").effect("Lines")("Color")';
+
+  app.endUndoGroup();
 
   app.endUndoGroup();
 }
