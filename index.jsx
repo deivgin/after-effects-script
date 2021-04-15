@@ -36,7 +36,7 @@ var background = myComp.layers.addSolid(
   //create shapeLayer
   var spinner = myComp.layers.addShape();
   spinner.name = "spinner";
-  spinner.property("Transform").property("Position").setValue([912, 544]);
+  spinner.property("Transform").property("Position").setValue([960, 544]);
   var spinnerContent = spinner
     .property("Contents")
     .addProperty("ADBE Vector Group");
@@ -46,7 +46,7 @@ var background = myComp.layers.addSolid(
   var spinnerEllipse1 = spinnerGroup1
     .property("Contents")
     .addProperty("ADBE Vector Shape - Ellipse");
-  spinnerEllipse1.property("Size").setValue([880, 880]); //Set Size
+  spinnerEllipse1.property("Size").setValue([900, 900]); //Set Size
   //Stroke
   var spinnerEllipseStroke = spinnerGroup1
     .property("Contents")
@@ -73,7 +73,7 @@ var background = myComp.layers.addSolid(
   //create shapeLayer
   var outerSpinner = myComp.layers.addShape();
   outerSpinner.name = "outerSpinner";
-  outerSpinner.property("Transform").property("Position").setValue([912, 544]);
+  outerSpinner.property("Transform").property("Position").setValue([960, 544]);
   outerSpinner.property("Transform").property("Scale").setValue([92.6, 92.6]);
   var outerSpinnerContent = outerSpinner
     .property("Contents")
@@ -86,7 +86,7 @@ var background = myComp.layers.addSolid(
   var outerSpinnerEllipse1 = outerSpinnerGroup1
     .property("Contents")
     .addProperty("ADBE Vector Shape - Ellipse");
-  outerSpinnerEllipse1.property("Size").setValue([880, 880]); //Set Size
+  outerSpinnerEllipse1.property("Size").setValue([900, 900]); //Set Size
   //Stroke
   var outerSpinnerEllipseStroke = outerSpinnerGroup1
     .property("Contents")
@@ -101,6 +101,7 @@ var background = myComp.layers.addSolid(
   app.beginUndoGroup("scooter");
   var scooter = myComp.layers.addShape();
   scooter.name = "scooter";
+  scooter.trackMatteType = TrackMatteType.ALPHA;
 
   //create shape groups
   var frameContent = scooter
@@ -174,6 +175,39 @@ var background = myComp.layers.addSolid(
   rightWheelStroke.property("Stroke Width").setValue(30);
   rightWheelStroke.property("Line Cap").setValue(2);
   rightWheelStroke.property("Color").setValue([0, 0, 0]);
+
+  //scooter animation
+  //scooter.property("Transform").property("Position").expression =
+  //  'delay = thisComp.layer("Main controller").effect("Jump delay")("Slider");if(time > delay){surface = [960, 540];jumpHeight = thisComp.layer("Main controller").effect("Jump height")("Slider");jump = [960, jumpHeight];period = thisComp.layer("Main controller").effect("Jump period")("Slider");	t = time % (period * 2); if (t > period) t = 2 * period - t; linear(Math.sin(t * Math.PI / period), 0, 1, surface, jump)}else easeOut(time, 0, delay, [300,540],[960,540])';
+
+  app.endUndoGroup();
+}
+
+{
+  app.beginUndoGroup("scooter mask");
+
+  //create shapeLayer
+  var scooterMask = myComp.layers.addShape();
+  scooterMask.name = "scooterMask";
+  scooterMask.property("Transform").property("Position").setValue([960, 540]);
+  var scooterMaskContent = scooterMask
+    .property("Contents")
+    .addProperty("ADBE Vector Group");
+  scooterMaskContent.name = "Ellipse 1";
+  var scooterMaskGroup1 = scooterMask
+    .property("Contents")
+    .property("Ellipse 1");
+  //Add Ellipse
+  var scooterMaskEllipse1 = scooterMaskGroup1
+    .property("Contents")
+    .addProperty("ADBE Vector Shape - Ellipse");
+  scooterMaskEllipse1.property("Size").setValue([820, 820]); //Set Size
+  //Fill
+  var scooterMaskFill = scooterMask
+    .property("Contents")
+    .addProperty("ADBE Vector Graphic - Fill");
+
+  scooterMask.enabled = false;
 
   app.endUndoGroup();
 }
