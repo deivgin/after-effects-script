@@ -101,7 +101,8 @@ var background = myComp.layers.addSolid(
   );
   jumpDelayController.name = "Jump delay";
   jumpDelayController.property("Slider").setValue(jumpDelay);
-  jumpDelayController.property("Slider").expression = "clamp(value,0,5)";
+  jumpDelayController.property("Slider").expression =
+    "clamp(value,0,thisComp.duration / 2)";
   app.endUndoGroup();
 
   //Toggle dropshadow
@@ -126,7 +127,7 @@ var background = myComp.layers.addSolid(
   app.beginUndoGroup("spinner");
   //create shapeLayer
   var spinner = myComp.layers.addShape();
-  spinner.name = "spinner";
+  spinner.name = "Spinner";
   spinner.property("Transform").property("Position").setValue([960, 544]);
   var spinnerContent = spinner
     .property("Contents")
@@ -163,7 +164,7 @@ var background = myComp.layers.addSolid(
   app.beginUndoGroup("outer spinner");
   //create shapeLayer
   var outerSpinner = myComp.layers.addShape();
-  outerSpinner.name = "outerSpinner";
+  outerSpinner.name = "Outer spinner";
   outerSpinner.property("Transform").property("Position").setValue([960, 544]);
   outerSpinner.property("Transform").property("Scale").setValue([92.6, 92.6]);
   var outerSpinnerContent = outerSpinner
@@ -286,7 +287,7 @@ var background = myComp.layers.addSolid(
 
   //create shapeLayer
   var scooterMask = myComp.layers.addShape();
-  scooterMask.name = "scooterMask";
+  scooterMask.name = "Scooter mask";
   scooterMask.property("Transform").property("Position").setValue([960, 540]);
   var scooterMaskContent = scooterMask
     .property("Contents")
@@ -314,7 +315,7 @@ var background = myComp.layers.addSolid(
   app.beginUndoGroup("speed lines");
   //create layer
   var speedLines = myComp.layers.addShape();
-  speedLines.name = "speedLines";
+  speedLines.name = "Speed lines";
   speedLines.parent = scooter;
   speedLines.property("Transform").property("Opacity").setValue(0);
   speedLines.property("Transform").property("Opacity").expression =
@@ -344,7 +345,7 @@ var background = myComp.layers.addSolid(
   var topLineM = topLineMask.value;
   var vt1 = [-810, -50];
   var vt2 = [-710, -50];
-  topLineM.vertices = [vt1, vt2];
+  topLineM.vertices = [vt2, vt1];
   topLineM.closed = false;
   topLineMask.setValue(topLineM);
   //top stroke
@@ -358,8 +359,8 @@ var background = myComp.layers.addSolid(
   var topLineTrimPath = topLine
     .property("Contents")
     .addProperty("ADBE Vector Filter - Trim");
-  topLineTrimPath.property("Start").expression =
-    'content("bottom line").content("Trim Paths 1").start.valueAtTime(time -0.1)';
+  topLineTrimPath.property("End").expression =
+    'content("bottom line").content("Trim Paths 1").end.valueAtTime(time -0.1)';
 
   //Bottom Line
   var bottomLine = speedLines.property("Contents").property("Group 2");
@@ -371,7 +372,7 @@ var background = myComp.layers.addSolid(
   var bottomLineM = bottomLineMask.value;
   var vb1 = [-910, 50];
   var vb2 = [-710, 50];
-  bottomLineM.vertices = [vb1, vb2];
+  bottomLineM.vertices = [vb2, vb1];
   bottomLineM.closed = false;
   bottomLineMask.setValue(bottomLineM);
   //bottom stroke
@@ -385,9 +386,9 @@ var background = myComp.layers.addSolid(
   var bottomLineTrimPath = bottomLine
     .property("Contents")
     .addProperty("ADBE Vector Filter - Trim");
-  bottomLineTrimPath.property("Start").setValueAtTime(0, 100);
-  bottomLineTrimPath.property("Start").setValueAtTime(1, 20);
-  bottomLineTrimPath.property("Start").expression = 'loopOut("pingpong")';
+  bottomLineTrimPath.property("End").setValueAtTime(0, 100);
+  bottomLineTrimPath.property("End").setValueAtTime(1, 20);
+  bottomLineTrimPath.property("End").expression = 'loopOut("pingpong")';
 
   app.endUndoGroup();
 }
